@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        <%= title %>
+    </title>
+    <link rel='stylesheet' href='/stylesheets/index.css' /> </head>
+
+<body>
+    <header>
+        <h1><%=title%></h1> </header>
+    <div id="left">
+        <ul id="list">
+            <% music.forEach(function(name){ %>
+                <li title="<%=name%>">
+                    <%=name%>
+                </li>
+                <%}) %>
+        </ul>
+    </div>
+    <div id="right"></div>
+</body>
+<script src='/javascripts/index.js'></script>
+
+</html>
