@@ -9,7 +9,8 @@
 
 <body>
     <header>
-        <h1><%=title%></h1> </header>
+        <h1><%=title%></h1>
+        <input type="range" min="0" max="100" value="40" id="volume"> </header>
     <div id="left">
         <ul id="list">
             <% music.forEach(function(name){ %>
@@ -21,6 +22,7 @@
     </div>
     <div id="right"></div>
 </body>
+<!--主文件-->
 <script src='/javascripts/index.js'></script>
 
 </html>

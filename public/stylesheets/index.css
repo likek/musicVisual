@@ -50,6 +50,11 @@ header {
     height: 120px;
 }
 
+header input {
+    display: block;
+    margin: 0 auto;
+}
+
 #left,
 #right {
     bottom: 10px;
