@@ -40,14 +40,13 @@ function resize() {
     width = box.clientWidth;
     canvas.width = width;
     canvas.height = height;
-    var line = ctx.createLinearGradient(0, 0, 0, height); //左上角到右下角的渐变
-    line.addColorStop(0, 'yellow');
-    line.addColorStop(0.5, 'green');
-    line.addColorStop(1, 'blue');
-    ctx.fillStyle = line; //设置统一的渐变填充色
     initItem();
 };
 resize();
+var line = ctx.createLinearGradient(0, 0, 0, height); //左上角到右下角的渐变
+line.addColorStop(0, 'yellow');
+line.addColorStop(0.5, 'green');
+line.addColorStop(1, 'blue');
 window.onresize = resize;
 /*******给每一个柱子添加初始状态*******/
 function initItem() {
@@ -64,6 +63,7 @@ initItem();
 /********************图形绘制函数****************************/
 function draw(arr) {
     ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = line; //设置统一的初始渐变填充色
     if (draw.type === 'col') {
         var w = width / size; //每个柱子的宽
         for (var i = 0; i < size; i++) {
@@ -88,7 +88,7 @@ function draw(arr) {
             var lineColor = ctx.createRadialGradient(item.x, item.y, 0, item.x, item.y, r);
             lineColor.addColorStop(0, item.color[0]);
             lineColor.addColorStop(1, item.color[1]);
-            ctx.fillStyle = lineColor;
+            ctx.fillStyle = lineColor; //改变填充色
             ctx.fill();
         }
     }
