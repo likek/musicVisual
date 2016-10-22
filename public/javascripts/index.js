@@ -63,6 +63,7 @@ initItem();
 /********************图形绘制函数****************************/
 function draw(arr) {
     ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = line; //设置统一的初始渐变填充色
     if (draw.type === 'col') {
         ctx.fillStyle = line; //设置整个画布渐变色
         var w = width / size; //每个柱子的宽
