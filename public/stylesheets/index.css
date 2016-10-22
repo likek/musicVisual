@@ -63,9 +63,11 @@ header input {
 
 #left {
     overflow: auto;
-    width: 120px;
+    /*    width: 140px;*/
+    width: 14%;
 }
 
 #right {
-    left: 140px;
+    left: -webkit-calc(14% + 20px);
+    /*    left: 160px;*/
 }

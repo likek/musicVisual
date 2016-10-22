@@ -48,7 +48,7 @@ function draw(arr) {
     ctx.clearRect(0, 0, width, height);
     var w = width / size; //每个柱子的宽
     for (var i = 0; i < size; i++) {
-        var h = arr[i] / (size * 2) * height; //每个柱子的高
+        var h = arr[i] / (size * 2) * height || 5; //每个柱子的高(给一个初始值)
         ctx.fillRect(w * i, height - h, w * 0.6, h);
     }
 }
@@ -60,7 +60,6 @@ function load(url) {
     xhr.open('GET', url);
     xhr.responseType = 'arraybuffer';
     /*××××××××××××××××请求处理完成时××××××××××××××××××*/
-    function draw() {}
     xhr.onload = function () {
         if (n != count) return; //如果当前load函数内的n和全局的conut不等就return,即只播放最后一次点击的音乐
         /*×××××解析数据×××××*/
@@ -82,7 +81,7 @@ function load(url) {
     }
     xhr.send();
 }
-/**************************绘制函数***************************/
+/**************************可视化函数***************************/
 function visualizer() {
     var arr = new Uint8Array(analyser.frequencyBinCount); //需要用到的结果数组
     /*********H5动画函数对象**************/
