@@ -23,7 +23,7 @@ var ac = new(window.AudioContext || window.webkitAudioContext)(); //创建AudioC
 var gainNode = ac[ac.createGain ? "createGain" : "createGainNode"](); //创建gainNode对象(主要用来操作音量)
 gainNode.connect(ac.destination);
 var analyser = ac.createAnalyser();
-var size = 128; //绘制数量
+var size = 64; //绘制数量
 analyser.fftSize = size * 2;
 analyser.connect(gainNode);
 var source = null; //存放钱一次播放的资源(解决快速点击时的bug)
@@ -67,7 +67,7 @@ function draw(arr) {
     if (draw.type === 'col') {
         var w = width / size; //每个柱子的宽
         for (var i = 0; i < size; i++) {
-            var h = arr[i] / (size * 2) * height || 5; //每个柱子的高(给一个初始值)
+            var h = arr[i] / 256 * height || 5; //每个柱子的高(给一个初始值)
             ctx.fillRect(w * i, height - h, w * 0.6, h); //柱子
             ctx.fillRect(w * i, height - cat[i].catH, w * 0.6, 5); //小帽
             cat[i].catH--; //小帽下落
@@ -81,8 +81,8 @@ function draw(arr) {
     }
     else if (draw.type === 'cir') {
         for (var i = 0; i < size; i++) {
-            var r = arr[i] / (size * 2) * 50 || 5;
-            var item = cat[i];
+            var r = arr[i] / 256 * 50 || 5; //圆的半径
+            var item = cat[i]; //每一个圆圈
             ctx.beginPath();
             ctx.arc(item.x, item.y, r, 0, 2 * Math.PI);
             var lineColor = ctx.createRadialGradient(item.x, item.y, 0, item.x, item.y, r);
@@ -90,6 +90,8 @@ function draw(arr) {
             lineColor.addColorStop(1, item.color[1]);
             ctx.fillStyle = lineColor; //改变填充色
             ctx.fill();
+            item.x > 0 ? item.x-- : item.x = width;
+            item.y > 0 ? item.y-- : item.y = height;
         }
     }
 }
