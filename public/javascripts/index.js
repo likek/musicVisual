@@ -2,6 +2,10 @@
 function $(ele) {
     return document.querySelectorAll(ele);
 }
+
+function $random(start, end) {
+    return Math.round(Math.random() * (end - start) + start);
+}
 var lis = $('#list li'); //音乐列表
 lis[0].className = 'selected'; //默认第一首歌被选中
 /*×××××××××××××××××××××歌曲的点击事件××××××××××××××××××××××××*/
@@ -26,7 +30,7 @@ var source = null; //存放钱一次播放的资源(解决快速点击时的bug)
 var count = 0; //存放当切换音乐的次数(解决快速点击时的bug)
 var box = $('#right')[0];
 var height, width; //右方区域宽高
-var cat = []; //每一个小帽的位置
+var cat = []; //每一个动画元素的属性
 var canvas = document.createElement('canvas');
 box.appendChild(canvas);
 var ctx = canvas.getContext('2d');
@@ -41,30 +45,55 @@ function resize() {
     line.addColorStop(0.5, 'green');
     line.addColorStop(1, 'blue');
     ctx.fillStyle = line; //设置统一的渐变填充色
+    initItem();
 };
 resize();
 window.onresize = resize;
-/*******给每一个柱子添加初始位置*******/
-for (var i = 0; i < size; i++) {
-    cat[i] = 0;
+/*******给每一个柱子添加初始状态*******/
+function initItem() {
+    for (var i = 0; i < size; i++) {
+        cat[i] = {
+            x: $random(0, width)
+            , y: $random(0, height)
+            , catH: 0
+            , color: ['rgb(' + $random(0, 255) + ',' + $random(0, 255) + ',' + $random(0, 255) + ')', 'rgba(' + $random(0, 255) + ',' + $random(0, 255) + ',' + $random(0, 255) + ',' + '.5)']
+        };
+    }
 }
+initItem();
 /********************图形绘制函数****************************/
 function draw(arr) {
     ctx.clearRect(0, 0, width, height);
-    var w = width / size; //每个柱子的宽
-    for (var i = 0; i < size; i++) {
-        var h = arr[i] / (size * 2) * height || 5; //每个柱子的高(给一个初始值)
-        ctx.fillRect(w * i, height - h, w * 0.6, h); //柱子
-        ctx.fillRect(w * i, height - cat[i], w * 0.6, 5); //小帽
-        cat[i]--; //小帽下落
-        if (cat[i] < 0) {
-            cat[i] = 0; //落到底部
+    if (draw.type === 'col') {
+        var w = width / size; //每个柱子的宽
+        for (var i = 0; i < size; i++) {
+            var h = arr[i] / (size * 2) * height || 5; //每个柱子的高(给一个初始值)
+            ctx.fillRect(w * i, height - h, w * 0.6, h); //柱子
+            ctx.fillRect(w * i, height - cat[i].catH, w * 0.6, 5); //小帽
+            cat[i].catH--; //小帽下落
+            if (cat[i].catH < 0) {
+                cat[i].catH = 0; //落到底部
+            }
+            if (h > 0 && cat[i].catH < h + 5) { //如果h突然增高也会带动小帽增高
+                cat[i].catH = h + 5 > height ? height - 5 : h + 5; //不能超出顶部
+            }
         }
-        if (h > 0 && cat[i] < h + 5) { //如果h突然增高也会带动小帽增高
-            cat[i] = h + 5 > height ? height - 5 : h + 5; //不能超出顶部
+    }
+    else if (draw.type === 'cir') {
+        for (var i = 0; i < size; i++) {
+            var r = arr[i] / (size * 2) * 50 || 5;
+            var item = cat[i];
+            ctx.beginPath();
+            ctx.arc(item.x, item.y, r, 0, 2 * Math.PI);
+            var lineColor = ctx.createRadialGradient(item.x, item.y, 0, item.x, item.y, r);
+            lineColor.addColorStop(0, item.color[0]);
+            lineColor.addColorStop(1, item.color[1]);
+            ctx.fillStyle = lineColor;
+            ctx.fill();
         }
     }
 }
+draw.type = 'col';
 /**************************请求发送和请求处理函数*****************************/
 function load(url) {
     source && source[source.stop ? 'stop' : 'noteOff'](); //前一次先停止
@@ -118,3 +147,6 @@ $('#volume')[0].onchange = function () {
     changeVolume(this.value / this.max);
 }
 $('#volume')[0].onchange; //让默认的音量大小立即生效
+$('#animation_type')[0].onchange = function () {
+    draw.type = this.value;
+}

@@ -22,6 +22,10 @@ li {
     color: aquamarine;
 }
 
+#list {
+    margin-top: 1rem;
+}
+
 header,
 #left,
 #right {
@@ -46,6 +50,8 @@ header,
 }
 
 header {
+    position: relative;
+    line-height: 106px;
     top: 10px;
     height: 120px;
 }
@@ -68,6 +74,21 @@ header input {
 }
 
 #right {
+    /*    text-align: right;*/
     left: -webkit-calc(14% + 20px);
     /*    left: 160px;*/
+}
+
+#volumeBox {
+    /*    float: left;*/
+    position: absolute;
+    right: 2rem;
+    top: 1rem;
+    /*    width: 100%;*/
+    text-align: right;
+}
+
+#volumeBox input {
+    display: inline-block;
+    margin-top: .5rem;
 }
