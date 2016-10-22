@@ -95,7 +95,7 @@ function draw(arr) {
         }
     }
 }
-draw.type = 'col';
+draw.type = 'cir';
 /**************************请求发送和请求处理函数*****************************/
 function load(url) {
     source && source[source.stop ? 'stop' : 'noteOff'](); //前一次先停止
