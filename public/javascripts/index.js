@@ -26,6 +26,7 @@ var source = null; //存放钱一次播放的资源(解决快速点击时的bug)
 var count = 0; //存放当切换音乐的次数(解决快速点击时的bug)
 var box = $('#right')[0];
 var height, width; //右方区域宽高
+var cat = []; //每一个小帽的位置
 var canvas = document.createElement('canvas');
 box.appendChild(canvas);
 var ctx = canvas.getContext('2d');
@@ -43,13 +44,25 @@ function resize() {
 };
 resize();
 window.onresize = resize;
+/*******给每一个柱子添加初始位置*******/
+for (var i = 0; i < size; i++) {
+    cat[i] = 0;
+}
 /********************图形绘制函数****************************/
 function draw(arr) {
     ctx.clearRect(0, 0, width, height);
     var w = width / size; //每个柱子的宽
     for (var i = 0; i < size; i++) {
         var h = arr[i] / (size * 2) * height || 5; //每个柱子的高(给一个初始值)
-        ctx.fillRect(w * i, height - h, w * 0.6, h);
+        ctx.fillRect(w * i, height - h, w * 0.6, h); //柱子
+        ctx.fillRect(w * i, height - cat[i], w * 0.6, 5); //小帽
+        cat[i]--; //小帽下落
+        if (cat[i] < 0) {
+            cat[i] = 0; //落到底部
+        }
+        if (h > 0 && cat[i] < h + 5) { //如果h突然增高也会带动小帽增高
+            cat[i] = h + 5 > height ? height - 5 : h + 5; //不能超出顶部
+        }
     }
 }
 /**************************请求发送和请求处理函数*****************************/
