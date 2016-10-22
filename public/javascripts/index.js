@@ -48,7 +48,7 @@ line.addColorStop(0, 'yellow');
 line.addColorStop(0.5, 'green');
 line.addColorStop(1, 'blue');
 window.onresize = resize;
-/*******给每一个柱子添加初始状态*******/
+/*******给每一个动画元素添加初始状态*******/
 function initItem() {
     for (var i = 0; i < size; i++) {
         cat[i] = {
@@ -63,8 +63,8 @@ initItem();
 /********************图形绘制函数****************************/
 function draw(arr) {
     ctx.clearRect(0, 0, width, height);
-    ctx.fillStyle = line; //设置统一的初始渐变填充色
     if (draw.type === 'col') {
+        ctx.fillStyle = line; //设置整个画布渐变色
         var w = width / size; //每个柱子的宽
         for (var i = 0; i < size; i++) {
             var h = arr[i] / 256 * height || 5; //每个柱子的高(给一个初始值)
@@ -90,8 +90,19 @@ function draw(arr) {
             lineColor.addColorStop(1, item.color[1]);
             ctx.fillStyle = lineColor; //改变填充色
             ctx.fill();
-            item.x > 0 ? item.x-- : item.x = width;
-            item.y > 0 ? item.y-- : item.y = height;
+            item.x > 0 ? item.x-- : item.x = width; //x轴运动
+            item.y > 0 ? item.y-- : item.y = height; //y轴运动
+        }
+    }
+    else {
+        var cx = width / 2
+            , cy = height / 2;
+        for (var i = 0; i < size; i++) {
+            ctx.beginPath();
+            ctx.arc(cx, cy, (i + 1) * 5, 0, 2 * Math.PI);
+            ctx.strokeStyle = cat[i].color[1];
+            ctx.lineWidth = arr[i] / 256 * 5;
+            ctx.stroke();
         }
     }
 }
@@ -135,6 +146,7 @@ function visualizer() {
         analyser.getByteFrequencyData(arr); //将本次的数据写入数组
         //console.log(arr);
         draw(arr); //绘制一次
+        console.log(arr);
         requestAnimationFrame(v);
     }
     requestAnimationFrame(v); //动画开始
