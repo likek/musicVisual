@@ -57,34 +57,23 @@ MusicBox.prototype = {
         }
     }
     /***********************************************************************************************/
+    /*
+    webAudio类用法：
+    var music = new MusicBox(64, draw);
+    其中draw函数必须包含一个参数arr，arr中存放了所有需要的音频数据；
+    arr的初始状态下，每个元素的值都为0;
+    arr的值由music.start(buffer)提供;
+    buffer可以通过music.decodeData()方法得到：
+    music.decodeData(xhr.response, function (buffer) {
+            music.start(buffer);
+        }, function (err) {
+            console.log(err);
+        })
+    */
 ;
-/*
-webAudio类用法：
-var music = new MusicBox(64, draw);
-其中draw函数必须包含一个参数arr，arr中存放了所有需要的音频数据；
-arr的初始状态下，每个元素的值都为0;
-arr的值由music.start(buffer)提供;
-buffer可以通过music.decodeData()方法得到：
-music.decodeData(xhr.response, function (buffer) {
-        music.start(buffer);
-    }, function (err) {
-        console.log(err);
-    })
-*/
 (function () {
     var music = new MusicBox(64, draw);
-    var lis = $('#list li'); //音乐列表
-    lis[0].className = 'selected'; //默认第一首歌被选中
-    /*×××××××××××××××××××××歌曲的点击事件××××××××××××××××××××××××*/
-    for (var i = 0; i < lis.length; i++) {
-        lis[i].onclick = function () {
-            for (var j = 0; j < lis.length; j++) {
-                lis[j].className = '';
-            }
-            this.className = 'selected';　 //被点音乐添加样式
-            load('/media/' + this.title); //发送资源请求
-        }
-    }
+    var musicls = $('#list')[0]; //音乐列表
     var xhr = new XMLHttpRequest(); //创建xhr对象
     var size = music.itemSize; //绘制数量
     var source = null; //存放钱一次播放的资源(解决快速点击时的bug)
@@ -92,6 +81,7 @@ music.decodeData(xhr.response, function (buffer) {
     var box = $('#right')[0];
     var height, width; //右方区域宽高
     var cat = [];
+    /*×××××××××××创建画布×××××××××××××*/
     var canvas = document.createElement('canvas');
     box.appendChild(canvas);
     var ctx = canvas.getContext('2d');
@@ -101,14 +91,8 @@ music.decodeData(xhr.response, function (buffer) {
         width = box.clientWidth;
         canvas.width = width;
         canvas.height = height;
-        initItem();
+        initItem(); //动画元素初始化
     };
-    resize();
-    var line = ctx.createLinearGradient(0, 0, 0, height); //左上角到右下角的渐变
-    line.addColorStop(0, 'yellow');
-    line.addColorStop(0.5, 'green');
-    line.addColorStop(1, 'blue');
-    window.onresize = resize;
     /*******给每一个动画元素添加初始状态*******/
     function initItem() {
         for (var i = 0; i < size; i++) {
@@ -120,7 +104,15 @@ music.decodeData(xhr.response, function (buffer) {
             };
         }
     }
+    resize();
+    window.onresize = resize;
     initItem();
+    /*********备用渐变色***********/
+    var line = ctx.createLinearGradient(0, 0, 0, height); //左上角到右下角的渐变
+    line.addColorStop(0, 'yellow');
+    line.addColorStop(0.5, 'green');
+    line.addColorStop(1, 'blue');
+    $('#list li')[0].className = 'selected'; //默认第一首歌被选中
     /*************************图形绘制*******************************/
     function draw(arr) {
         ctx.clearRect(0, 0, width, height);
@@ -190,11 +182,23 @@ music.decodeData(xhr.response, function (buffer) {
         }
         xhr.send();
     }
-    /*音量按钮change事件*/
+    /*×××××××××××××××××××××歌曲的点击事件××××××××××××××××××××××××*/
+    musicls.addEventListener('click', function (e) {
+            var tag = e.target;
+            if (tag.tagName === 'LI') {
+                var lis = $('#list li');
+                for (var j = 0; j < lis.length; j++) {
+                    lis[j].className = '';
+                }
+                tag.className = 'selected';　 //被点音乐添加样式
+                load('/media/' + tag.title); //发送资源请求
+            }
+        })
+        /*音量按钮change事件*/
     $('#volume')[0].onchange = function () {
-        music.changeVolume(this.value / this.max);
+        music.changeVolume(this.value / this.max); //改变音量
     }
-    $('#volume')[0].onchange; //让默认的音量大小立即生效
+    $('#volume')[0].onchange(); //让默认的音量大小立即生效
     $('#animation_type')[0].onchange = function () {
         draw.type = this.value; //改变绘制类型
     }
