@@ -8,10 +8,15 @@
 * 其中64表示需要绘制的图形数量，draw函数必须包含一个参数arr，arr中存放了所有需要的音频数据；
 * arr的初始状态下，每个元素的值都为0;
 * arr的值由music.start(buffer)提供;
-* buffer可以通过music.decodeData()方法得到：
-`music.decodeData(xhr.response, function (buffer) {
-    music.start(buffer);
-}, function (err) {
-    console.log(err);
+* buffer可以通过music.decodeData()方法得到：　　
+
+`music.decodeData(xhr.response, function (buffer) {　　
+
+    music.start(buffer);　　
+    
+}, function (err) {　　
+
+    console.log(err);　　
+    
 })`
 * 上面函数中xhr.response为后台获取到的音频数据
