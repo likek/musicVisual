@@ -38,10 +38,8 @@ MusicBox.prototype = {
             requestAnimationFrame(v); //动画开始
         }
         , start: function (buffer) {
-            console.log(this);
             /*解析成功时对数据处理*/
             this.bufferSource = this.ac.createBufferSource();
-            this.volume = this.gainNode.gain.value;
             this.soure && this.soure[this.soure.stop ? 'stop' : 'noteOff'](); //前一次先停止
             this.bufferSource.buffer = buffer;
             this.bufferSource.connect(this.analyser); //无需再connect到destination
@@ -53,6 +51,9 @@ MusicBox.prototype = {
         }
         , decodeData: function (data, callback, err) {
             return this.ac.decodeAudioData(data, callback, err);
+        }
+        , changeVolume: function (val) {
+            return this.gainNode.gain.value = val;
         }
     }
     /***********************************************************************************************/
@@ -189,13 +190,9 @@ music.decodeData(xhr.response, function (buffer) {
         }
         xhr.send();
     }
-    /*********改变音量***××××通过改变gainNode.gain.value××××****/
-    function changeVolume(percent) {
-        music.volume = percent * percent;
-    }
     /*音量按钮change事件*/
     $('#volume')[0].onchange = function () {
-        changeVolume(this.value / this.max);
+        music.changeVolume(this.value / this.max);
     }
     $('#volume')[0].onchange; //让默认的音量大小立即生效
     $('#animation_type')[0].onchange = function () {
