@@ -18,9 +18,7 @@ function MusicBox(size, draw) {
     this.itemSize = size;
     this.draw = draw;
     this.visualizer(); //立即开启动画
-    /*解析成功时对数据处理*/
-    this.bufferSource = this.ac.createBufferSource();
-    this.volume = this.gainNode.gain.value;
+    this.soure = null;
 }
 MusicBox.prototype = {
         /**************************可视化函数***************************/
@@ -40,12 +38,18 @@ MusicBox.prototype = {
             requestAnimationFrame(v); //动画开始
         }
         , start: function (buffer) {
+            console.log(this);
+            /*解析成功时对数据处理*/
+            this.bufferSource = this.ac.createBufferSource();
+            this.volume = this.gainNode.gain.value;
+            this.soure && this.soure[this.soure.stop ? 'stop' : 'noteOff'](); //前一次先停止
             this.bufferSource.buffer = buffer;
             this.bufferSource.connect(this.analyser); //无需再connect到destination
             this.bufferSource[this.bufferSource.start ? "start" : "noteOn"](0);
+            this.soure = this.bufferSource;
         }
         , stop: function () {
-            return this.bufferSource[source.stop ? 'stop' : 'noteOff']();
+            return this.bufferSource[this.bufferSource.stop ? 'stop' : 'noteOff']();
         }
         , decodeData: function (data, callback, err) {
             return this.ac.decodeAudioData(data, callback, err);
@@ -167,7 +171,6 @@ music.decodeData(xhr.response, function (buffer) {
     draw.type = 'cir'; //绘制图形类型
     /**************************请求发送和请求处理函数*****************************/
     function load(url) {
-        source && source[source.stop ? 'stop' : 'noteOff'](); //前一次先停止
         var n = ++count; //count是全局变量，因此每次点击都会正常的增加，n为局部变量，每次会深复制一份，有多个n
         xhr.abort(); //终止前一次xhr请求(万一钱一次请求还未完成时又发生一次点击)
         xhr.open('GET', url);
@@ -179,7 +182,6 @@ music.decodeData(xhr.response, function (buffer) {
             music.decodeData(xhr.response, function (buffer) {
                 if (n != count) return; //如果不是最后一次点击
                 music.start(buffer);
-                source = music.bufferSource;
             }, function (err) {
                 /*错误处理*/
                 console.log(err);
