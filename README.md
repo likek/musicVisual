@@ -1,11 +1,11 @@
 # musicVisul
 音乐可视化小练习(使用NodeJS , webAudio API , Canvas)
 ## 使用
-1.项目依赖安装完成后，在/public/目录下创建media目录，将音乐文件放置在/public/media目录  
+1.使用npm install命令 安装所有依赖的包 
 
-2.npm install 安装所有依赖的包  
+2.项目依赖安装完成后，在/public/目录下创建media目录，将音乐文件放置在/public/media目录   
 
-3.运行npm start命令，打开本地3000端口
+3.运行npm start命令，浏览器打开本地3000端口
 ## 源码中webAudio类的使用
 * var music = new MusicBox(64, draw);
 * 其中64表示需要绘制的图形数量，draw函数必须包含一个参数arr，arr中存放了所有需要的音频数据；
